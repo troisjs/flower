@@ -71,6 +71,10 @@ onMounted(() => {
 })
 
 function initMesh(mesh) {
+  updateInstanceColor(mesh)
+}
+
+function updateInstanceColor(mesh) {
   for (let i = 0; i < N1; i++) {
     for (let j = 0; j < N2; j++) {
       const n = i * N2 + j

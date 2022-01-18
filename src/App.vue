@@ -88,18 +88,18 @@ function updateInstanceMatrix(mesh) {
   const t = (Date.now() * 0.00005) % 1
   const da = 2 * Math.PI / N2
   const drx = 2 * params.startRx / N1
-  let k, tcoef, zOffset, r, n, a, x, y, scale
+  let k, tcoef, zOffset, r, scale, n, a, x, y
   for (let i = 0; i < N1; i++) {
     k = (i + t * N1) % N1
     tcoef = Math.sin(Math.PI * k / N1)
     zOffset = params.zOffsetCoef * i
     r = tcoef * params.maxRadius
+    scale = tcoef * params.maxScale
     for (let j = 0; j < N2; j++) {
       n = i * N2 + j
       a = da * (j + zOffset)
       x = r * Math.cos(a)
       y = r * Math.sin(a)
-      scale = tcoef * params.maxScale
       dummy.position.set(x, y, 0)
       dummy.rotation.set(params.startRx - k * drx, 0, a - Math.PI / 2, 'ZXY')
       dummy.scale.set(scale, scale, scale)

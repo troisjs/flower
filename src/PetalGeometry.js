@@ -1,4 +1,4 @@
-import { ExtrudeGeometry, Shape, ShapeGeometry } from 'three'
+import { ExtrudeGeometry, Shape } from 'three'
 import { BufferGeometry } from 'troisjs'
 
 export default {

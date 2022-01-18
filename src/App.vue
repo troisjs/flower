@@ -42,7 +42,7 @@ import PetalGeometry from './PetalGeometry.js'
 import chroma from 'chroma-js'
 
 const N1 = 50
-const N2 = 6
+const N2 = 8
 const NUM_INSTANCES = N1 * N2
 
 const params = {
@@ -51,10 +51,11 @@ const params = {
   maxRadius: 0.25,
   maxScale: 3,
   startRx: Math.PI / 3,
-  zOffsetCoef: 0.7
+  zOffsetCoef: 0.6
 }
 
-params.cscale = chroma.scale([params.color1, params.color2, params.color1])
+// params.cscale = chroma.scale([params.color1, params.color2, params.color1])
+params.cscale = chroma.scale([0x000000, 0xffffff])
 
 const dummy = new Object3D()
 
@@ -78,7 +79,8 @@ function updateInstanceColor(mesh) {
   for (let i = 0; i < N1; i++) {
     for (let j = 0; j < N2; j++) {
       const n = i * N2 + j
-      mesh.setColorAt(n, new Color(params.cscale(n / NUM_INSTANCES).hex()))
+      // mesh.setColorAt(n, new Color(params.cscale(n / NUM_INSTANCES).hex()))
+      mesh.setColorAt(n, new Color(params.cscale(j / N2).hex()))
     }
   }
   mesh.instanceColor.needsUpdate = true

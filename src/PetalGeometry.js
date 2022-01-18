@@ -12,7 +12,7 @@ export default {
   }
 }
 
-function createPetal({ length = 1, dx = 0.4, dy = 0.3 }) {
+function createPetal({ length = 1, dx = 0.4, dy = 0.8 }) {
   const sp = [0, 0]
   const cp1 = [dx, dy]
   const cp2 = [-dx, dy]

@@ -10,7 +10,6 @@ export default {
   },
   methods: {
     createGeometry() {
-      console.log(this.size)
       this.geometry = createPetal({ size: this.size, dx: this.dx, dy: this.dy })
     }
   }

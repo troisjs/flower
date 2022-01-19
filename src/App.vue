@@ -48,7 +48,7 @@ const NUM_INSTANCES = N1 * N2
 
 const params = {
   color1: '#ffffff',
-  color2: '#000000',
+  color2: '#ff0000',
   maxRadius: 0.25,
   maxScale: 3,
   startRx: Math.PI / 3,
@@ -67,7 +67,7 @@ onMounted(() => {
   const renderer = rendererRef.value
   const mesh = meshRef.value.mesh
 
-  const pane = new Pane()
+  const pane = new Pane({ title: 'Parameters', expanded: false })
 
   const folder1 = pane.addFolder({ title: 'Colors' })
   folder1.addInput(params, 'color1', { view: 'color' }).on('change', () => { updateInstanceColor(mesh) })
@@ -86,6 +86,10 @@ onMounted(() => {
   folder3.addInput(params, 'maxScale', { min: 0.5, max: 5, step: 0.1 })
   folder3.addInput(params, 'startRx', { min: 0.1, max: Math.PI, step: 0.1 })
   folder3.addInput(params, 'zOffsetCoef', { min: 0, max: 10, step: 0.25 })
+
+  const folder4 = pane.addFolder({ title: 'Material' })
+  folder4.addInput(mesh.material, 'metalness', { min: 0, max: 1, step: 0.01 })
+  folder4.addInput(mesh.material, 'roughness', { min: 0, max: 1, step: 0.01 })
 
   onUnmounted(() => {
     pane.dispose()

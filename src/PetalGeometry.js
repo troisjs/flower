@@ -26,6 +26,7 @@ function createPetal({ size = 1, dx = 0.4, dy = 0.8 }) {
   shape.quadraticCurveTo(cp1[0], cp1[1], ep[0], ep[1])
   shape.quadraticCurveTo(cp2[0], cp2[1], sp[0], sp[1])
   const geometry = new ExtrudeGeometry(shape, {
+    curveSegments: 24,
     steps: 1,
     depth: 0.005,
     bevelEnabled: true,

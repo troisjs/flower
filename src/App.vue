@@ -47,20 +47,15 @@ const N2 = 8
 const NUM_INSTANCES = N1 * N2
 
 const params = {
-  color1: chroma.random(),
-  color2: chroma.random(),
+  color1: chroma.random().hex(),
+  color2: chroma.random().hex(),
   maxRadius: 0.25,
   maxScale: 3,
   startRx: Math.PI / 3,
   zOffsetCoef: 0.6
 }
 
-// const petalParams = reactive({ size: 1, dx: 0.4, dy: 0.8 })
 const petalParams = ref({ size: 1, dx: 0.4, dy: 0.8 })
-
-// params.cscale = chroma.scale([params.color1, params.color2, params.color1])
-params.cscale = chroma.scale([params.color1, params.color2])
-// params.cscale = chroma.scale([0x000000, 0xffffff])
 
 const dummy = new Object3D()
 
@@ -72,14 +67,28 @@ onMounted(() => {
   const mesh = meshRef.value.mesh
 
   const pane = new Pane()
-  pane.addInput(params, 'maxRadius', { min: 0, max: 5, step: 0.1 })
-  pane.addInput(params, 'maxScale', { min: 0.5, max: 5, step: 0.1 })
-  pane.addInput(params, 'startRx', { min: 0.1, max: Math.PI, step: 0.1 })
-  pane.addInput(params, 'zOffsetCoef', { min: 0, max: 1, step: 0.1 })
 
-  pane.addInput(petalParams.value, 'size', { min: 0.5, max: 5, step: 0.1 })
-  pane.addInput(petalParams.value, 'dx', { min: 0.1, max: 5, step: 0.1 })
-  pane.addInput(petalParams.value, 'dy', { min: 0, max: 5, step: 0.1 })
+  const folder1 = pane.addFolder({ title: 'Colors' })
+  folder1.addInput(params, 'color1', { view: 'color' }).on('change', () => { updateInstanceColor(mesh) })
+  folder1.addInput(params, 'color2', { view: 'color' }).on('change', () => { updateInstanceColor(mesh) })
+
+  folder1.addButton({ title: 'Random colors' }).on('click', () => {
+    params.color1 = chroma.random().hex()
+    params.color2 = chroma.random().hex()
+    pane.refresh()
+    updateInstanceColor(mesh)
+  })
+
+  const folder2 = pane.addFolder({ title: 'Petals' })
+  folder2.addInput(petalParams.value, 'size', { min: 0.5, max: 2, step: 0.1 })
+  folder2.addInput(petalParams.value, 'dx', { min: 0.1, max: 2, step: 0.1 })
+  folder2.addInput(petalParams.value, 'dy', { min: 0, max: 2, step: 0.1 })
+
+  const folder3 = pane.addFolder({ title: 'Flower' })
+  folder3.addInput(params, 'maxRadius', { min: 0, max: 5, step: 0.1 })
+  folder3.addInput(params, 'maxScale', { min: 0.5, max: 5, step: 0.1 })
+  folder3.addInput(params, 'startRx', { min: 0.1, max: Math.PI, step: 0.1 })
+  folder3.addInput(params, 'zOffsetCoef', { min: 0, max: 1, step: 0.1 })
 
   renderer.onBeforeRender(() => {
     updateInstanceMatrix(mesh)
@@ -91,11 +100,12 @@ function initMesh(mesh) {
 }
 
 function updateInstanceColor(mesh) {
+  const cscale = chroma.scale([params.color1, params.color2])
   for (let i = 0; i < N1; i++) {
     for (let j = 0; j < N2; j++) {
       const n = i * N2 + j
-      // mesh.setColorAt(n, new Color(params.cscale(n / NUM_INSTANCES).hex()))
-      mesh.setColorAt(n, new Color(params.cscale(j / N2).hex()))
+      // mesh.setColorAt(n, new Color(cscale(n / NUM_INSTANCES).hex()))
+      mesh.setColorAt(n, new Color(cscale(j / N2).hex()))
     }
   }
   mesh.instanceColor.needsUpdate = true

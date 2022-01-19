@@ -10,6 +10,7 @@
     "chroma-js": "^2.1.2",
     "three": "^0.136.0",
     "troisjs": "^0.3.3",
+    "tweakpane": "^3.0.7",
     "vue": "^3.2.20"
   },
   "devDependencies": {

@@ -3,20 +3,24 @@ import { BufferGeometry } from 'troisjs'
 
 export default {
   extends: BufferGeometry,
+  props: {
+    size: { type: Number, default: 1 },
+    dx: { type: Number, default: 0.4 },
+    dy: { type: Number, default: 0.8 }
+  },
   methods: {
     createGeometry() {
-      this.geometry = createPetal({
-
-      })
+      console.log(this.size)
+      this.geometry = createPetal({ size: this.size, dx: this.dx, dy: this.dy })
     }
   }
 }
 
-function createPetal({ length = 1, dx = 0.4, dy = 0.8 }) {
+function createPetal({ size = 1, dx = 0.4, dy = 0.8 }) {
   const sp = [0, 0]
   const cp1 = [dx, dy]
   const cp2 = [-dx, dy]
-  const ep = [0, length]
+  const ep = [0, size]
 
   const shape = new Shape()
   shape.moveTo(sp[0], sp[1])

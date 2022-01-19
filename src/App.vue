@@ -12,7 +12,7 @@
         cast-shadow :shadow-map-size="{ width: 1024, height: 1024 }"
       />
       <InstancedMesh ref="meshRef" @created="initMesh" :count="NUM_INSTANCES" cast-shadow receive-shadow>
-        <PetalGeometry />
+        <PetalGeometry v-bind="petalParams" />
         <StandardMaterial :props="{ metalness: 0.75, roughness: 0.5 }" />
       </InstancedMesh>
     </Scene>
@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { Color, Object3D } from 'three'
 import {
   AmbientLight,
@@ -40,6 +40,7 @@ import {
 } from 'troisjs'
 import PetalGeometry from './PetalGeometry.js'
 import chroma from 'chroma-js'
+import { Pane } from 'tweakpane'
 
 const N1 = 50
 const N2 = 8
@@ -54,8 +55,12 @@ const params = {
   zOffsetCoef: 0.6
 }
 
+// const petalParams = reactive({ size: 1, dx: 0.4, dy: 0.8 })
+const petalParams = ref({ size: 1, dx: 0.4, dy: 0.8 })
+
 // params.cscale = chroma.scale([params.color1, params.color2, params.color1])
-params.cscale = chroma.scale([0x000000, 0xffffff])
+params.cscale = chroma.scale([params.color1, params.color2])
+// params.cscale = chroma.scale([0x000000, 0xffffff])
 
 const dummy = new Object3D()
 
@@ -65,6 +70,16 @@ const meshRef = ref()
 onMounted(() => {
   const renderer = rendererRef.value
   const mesh = meshRef.value.mesh
+
+  const pane = new Pane()
+  pane.addInput(params, 'maxRadius', { min: 0, max: 5, step: 0.1 })
+  pane.addInput(params, 'maxScale', { min: 0.5, max: 5, step: 0.1 })
+  pane.addInput(params, 'startRx', { min: 0.1, max: Math.PI, step: 0.1 })
+  pane.addInput(params, 'zOffsetCoef', { min: 0, max: 1, step: 0.1 })
+
+  pane.addInput(petalParams.value, 'size', { min: 0.5, max: 5, step: 0.1 })
+  pane.addInput(petalParams.value, 'dx', { min: 0.1, max: 5, step: 0.1 })
+  pane.addInput(petalParams.value, 'dy', { min: 0, max: 5, step: 0.1 })
 
   renderer.onBeforeRender(() => {
     updateInstanceMatrix(mesh)

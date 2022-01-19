@@ -13,6 +13,7 @@ specifiers:
   eslint-plugin-vue: ^7.20.0
   three: ^0.136.0
   troisjs: ^0.3.3
+  tweakpane: ^3.0.7
   vite: ^2.6.10
   vue: ^3.2.20
 
@@ -20,6 +21,7 @@ dependencies:
   chroma-js: 2.1.2
   three: 0.136.0
   troisjs: 0.3.3
+  tweakpane: 3.0.7
   vue: 3.2.26
 
 devDependencies:
@@ -2114,6 +2116,10 @@ packages:
   /tty-browserify/0.0.0:
     resolution: {integrity: sha1-oVe6QC2iTpv5V/mqadUk7tQpAaY=}
     dev: true
+
+  /tweakpane/3.0.7:
+    resolution: {integrity: sha512-rgxqoo6T10atYoKHVif6aYlAMIAlHJ84hi5LXqi6ZgVEPcmnzPI34C88y6HquarBY0ZKE/ZCXVaZm8NibhQRtA==}
+    dev: false
 
   /type-check/0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}

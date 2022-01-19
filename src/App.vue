@@ -4,11 +4,11 @@
     <Scene background="#ffffff">
       <AmbientLight color="#505050" />
       <SpotLight ref="light"
-        color="#ff9060" :intensity="0.5" :position="{ y: 1, z: -3 }"
+        :color="lightParams.color1" :intensity="0.5" :position="{ y: -1, z: 3 }"
         cast-shadow :shadow-map-size="{ width: 1024, height: 1024 }"
       />
       <SpotLight ref="light"
-        color="#6090ff" :intensity="0.5" :position="{ y: -1, z: 3 }"
+        :color="lightParams.color2" :intensity="0.5" :position="{ y: 1, z: -3 }"
         cast-shadow :shadow-map-size="{ width: 1024, height: 1024 }"
       />
       <InstancedMesh ref="meshRef" @created="initMesh" :count="NUM_INSTANCES" cast-shadow receive-shadow>
@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { Color, Object3D } from 'three'
 import {
   AmbientLight,
@@ -47,15 +47,16 @@ const N2 = 8
 const NUM_INSTANCES = N1 * N2
 
 const params = {
-  color1: chroma.random().hex(),
-  color2: chroma.random().hex(),
+  color1: '#ffffff',
+  color2: '#000000',
   maxRadius: 0.25,
   maxScale: 3,
   startRx: Math.PI / 3,
-  zOffsetCoef: 0.6
+  zOffsetCoef: 5
 }
 
 const petalParams = ref({ size: 1, dx: 0.4, dy: 0.8 })
+const lightParams = ref({ color1: '#6090ff', color2: '#ff9060' })
 
 const dummy = new Object3D()
 
@@ -71,13 +72,9 @@ onMounted(() => {
   const folder1 = pane.addFolder({ title: 'Colors' })
   folder1.addInput(params, 'color1', { view: 'color' }).on('change', () => { updateInstanceColor(mesh) })
   folder1.addInput(params, 'color2', { view: 'color' }).on('change', () => { updateInstanceColor(mesh) })
-
-  folder1.addButton({ title: 'Random colors' }).on('click', () => {
-    params.color1 = chroma.random().hex()
-    params.color2 = chroma.random().hex()
-    pane.refresh()
-    updateInstanceColor(mesh)
-  })
+  folder1.addInput(lightParams.value, 'color1', { view: 'color', label: 'lightColor1' })
+  folder1.addInput(lightParams.value, 'color2', { view: 'color', label: 'lightColor2' })
+  folder1.addButton({ title: 'Random colors' }).on('click', () => { randomColors(mesh); pane.refresh() })
 
   const folder2 = pane.addFolder({ title: 'Petals' })
   folder2.addInput(petalParams.value, 'size', { min: 0.5, max: 2, step: 0.1 })
@@ -88,7 +85,11 @@ onMounted(() => {
   folder3.addInput(params, 'maxRadius', { min: 0, max: 5, step: 0.1 })
   folder3.addInput(params, 'maxScale', { min: 0.5, max: 5, step: 0.1 })
   folder3.addInput(params, 'startRx', { min: 0.1, max: Math.PI, step: 0.1 })
-  folder3.addInput(params, 'zOffsetCoef', { min: 0, max: 1, step: 0.1 })
+  folder3.addInput(params, 'zOffsetCoef', { min: 0, max: 10, step: 0.25 })
+
+  onUnmounted(() => {
+    pane.dispose()
+  })
 
   renderer.onBeforeRender(() => {
     updateInstanceMatrix(mesh)
@@ -97,6 +98,15 @@ onMounted(() => {
 
 function initMesh(mesh) {
   updateInstanceColor(mesh)
+}
+
+function randomColors(mesh) {
+  params.color1 = chroma.random().hex()
+  params.color2 = chroma.random().hex()
+  updateInstanceColor(mesh)
+
+  lightParams.value.color1 = chroma.random().hex()
+  lightParams.value.color2 = chroma.random().hex()
 }
 
 function updateInstanceColor(mesh) {
@@ -119,12 +129,14 @@ function updateInstanceMatrix(mesh) {
   for (let i = 0; i < N1; i++) {
     k = (i + t * N1) % N1
     tcoef = Math.sin(Math.PI * k / N1)
-    zOffset = params.zOffsetCoef * i
+    // zOffset = params.zOffsetCoef * i
+    zOffset = i * params.zOffsetCoef * Math.PI / N1
     r = tcoef * params.maxRadius
     scale = tcoef * params.maxScale
     for (let j = 0; j < N2; j++) {
       n = i * N2 + j
-      a = da * (j + zOffset)
+      // a = da * (j + zOffset)
+      a = da * j + zOffset
       x = r * Math.cos(a)
       y = r * Math.sin(a)
       dummy.position.set(x, y, 0)
